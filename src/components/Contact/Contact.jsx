@@ -1,14 +1,15 @@
 import { useDispatch } from "react-redux";
 import { Button, Icon } from "./Contact.styled";
-import { remove } from "redux/contactsSlice";
+import { deleteContact } from "redux/operations";
 
-export const Contact = ({ data: { id, name, number } }) => {
+export const Contact = ({ data: { id, name, phone } }) => {
   const dispatch = useDispatch()
+  
   return (
     <>
       <span>{name}:</span>
-      <span>{number}</span>
-      <Button type="button" onClick={() => dispatch(remove(id))}>
+      <span>{phone}</span>
+      <Button type="button" onClick={() => dispatch(deleteContact(id))}>
         <Icon />
       </Button>
     </>

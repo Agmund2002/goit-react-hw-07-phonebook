@@ -8,17 +8,18 @@ import {
   ModernForm,
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { add, getContacts } from 'redux/contactsSlice';
+import { getContacts } from 'redux/contactsSlice';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { addContact } from 'redux/operations';
 
 const schema = Yup.object().shape({
   name: Yup.string()
     .min(1, 'Too Short!')
     .max(30, 'Too Long!')
     .required('Required'),
-  number: Yup.string()
-    .min(10, 'Short phone number')
-    .max(22, 'Long phone number')
+  phone: Yup.string()
+    .min(9, 'Short phone number')
+    .max(12, 'Long phone number')
     .required('Required'),
 });
 
@@ -31,14 +32,14 @@ export const ContactForm = () => {
       return Notify.failure(`${inputValue.name} is already in contacts`);
     }
 
-    dispatch(add(inputValue));
+    dispatch(addContact({ ...inputValue, createdAt: new Date()}));
   };
   
   return (
     <Formik
       initialValues={{
         name: '',
-        number: '',
+        phone: '',
       }}
       validationSchema={schema}
       onSubmit={(values, actions) => {
@@ -57,10 +58,10 @@ export const ContactForm = () => {
           Phone number
           <ModernField
             type="tel"
-            name="number"
-            placeholder="+38(099)-000-0000"
+            name="phone"
+            placeholder="000-000-0000"
           />
-          <ModernErrorMessage component="span" name="number" />
+          <ModernErrorMessage component="span" name="phone" />
         </Label>
 
         <Button type="submit">Add contact</Button>
