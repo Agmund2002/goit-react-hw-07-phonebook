@@ -2,7 +2,7 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContacts, getError, getIsLoading } from 'redux/contactsSlice';
+import { selectContacts, selectError, selectIsLoading } from 'redux/selectors';
 import {
   MainTitle,
   Message,
@@ -13,9 +13,9 @@ import { fetchContacts } from 'redux/operations';
 import { BarLoader } from 'react-spinners';
 
 export const App = () => {
-  const contacts = useSelector(getContacts);
-  const loading = useSelector(getIsLoading);
-  const error = useSelector(getError);
+  const contacts = useSelector(selectContacts);
+  const loading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
   const dispatch = useDispatch();
 
   useEffect(() => {

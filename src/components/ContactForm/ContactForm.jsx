@@ -1,3 +1,4 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -8,9 +9,11 @@ import {
   ModernForm,
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/contactsSlice';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { selectContacts } from 'redux/selectors';
 import { addContact } from 'redux/operations';
+
+const phoneRegExp =
+  '\\+?\\d{1,4}?[ .\\-\\s]?\\(?\\d{1,3}?\\)?[ .\\-\\s]?\\d{1,4}[ .\\-\\s]?\\d{1,4}[ .\\-\\s]?\\d{1,9}';
 
 const schema = Yup.object().shape({
   name: Yup.string()
@@ -19,22 +22,23 @@ const schema = Yup.object().shape({
     .required('Required'),
   phone: Yup.string()
     .min(9, 'Short phone number')
-    .max(12, 'Long phone number')
+    .max(18, 'Long phone number')
+    .matches(phoneRegExp, 'Phone number is not valid')
     .required('Required'),
 });
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
 
-  const handlerAdd = inputValue => { 
+  const handlerAdd = inputValue => {
     if (contacts.find(({ name }) => name === inputValue.name)) {
       return Notify.failure(`${inputValue.name} is already in contacts`);
     }
 
-    dispatch(addContact({ ...inputValue, createdAt: new Date()}));
+    dispatch(addContact({ ...inputValue, createdAt: new Date() }));
   };
-  
+
   return (
     <Formik
       initialValues={{
@@ -56,11 +60,7 @@ export const ContactForm = () => {
 
         <Label>
           Phone number
-          <ModernField
-            type="tel"
-            name="phone"
-            placeholder="000-000-0000"
-          />
+          <ModernField type="tel" name="phone" placeholder="000-000-0000" />
           <ModernErrorMessage component="span" name="phone" />
         </Label>
 
